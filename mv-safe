@@ -1,7 +1,66 @@
 #! /bin/bash
 ## mv-safe: add suffix if file exists; preserve file extension.
-## Issues:
-## - files without extensions gain an extension of their own name. not good.
+## version 0.2
+## issues:
+## - add options; support hidden files
+## - mv to same directory as source increments the suffix
+
+## vars
+dir=""		# Target directory
+filename=""	# Target filename
+ext=""		# Target .extension
+basename=""	# Target filename without .extension
+suffix=""	# Target suffix
+
+## functions
+get-ext () {
+	ext=${filename#*.}
+	if [[ $ext == $filename ]]; then
+		ext=""
+	else
+		ext=."$ext"
+	fi
+	basename=$(basename "$filename" "$ext")
+}
+gen-suffix () {
+	suffix=$(ls "$dir" | grep "$basename" | grep "$ext" | 
+		sed "s|"$basename"_||" | sed "s|\..*||" |
+		grep "^[[:digit:]]*$" | sort -n | tail -1)
+	if [[ -z $suffix ]]; then
+		suffix=0
+	fi
+	suffix=$(( $suffix + 1 ))
+}
+
+## main
+if [[ $# -ne 2 ]]; then # Incorrect arguments
+	>&2 echo 'mv-safe: source and target arguments required'
+	exit
+elif [[ -d $2 ]]; then # Target is an existing directory
+	filename=$(basename $1)
+	dir=$(realpath $2)
+	if [[ -f $dir/$filename ]]; then
+		get-ext
+		gen-suffix
+		mv -n "$1" "$dir"/"$basename"_"$suffix""$ext"
+	else
+		mv -n "$1" "$dir/$filename"
+	fi
+elif [[ -f $2 ]]; then # Target is an existing file
+	filename=$(basename "$2")
+	dir=$(realpath "$2" | sed "s|/$filename||")
+	get-ext
+	gen-suffix
+	mv -n "$1" "$dir"/"$basename"_"$suffix""$ext"
+else # Target does not exist
+	filename=$(basename "$2")
+	dir=$(realpath "$2" | sed "s|/$filename||")
+	if [[ -d $dir ]]; then
+		mv -n "$1" "$2"
+	else
+		>&2 echo 'mv-safe: unexpected arguments'
+	fi
+fi
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,26 +74,3 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-file=$1
-dir=$2
-
-move-safe () {
-	mv -n "$file" "$dir/${file%.*}_$RANDOM.${file##*.}"
-}
-
-loop () {
-	if [ -e $file ] && [ -e $dir/$file ]; then
-		move-safe
-	elif [ ! -e $dir/$file ]; then
-		mv -n $file $dir
-	else
-		exit
-	fi
-}
-
-if [[ -d $dir ]]; then
-	while true; do loop; done
-else
-	>&2 echo 'mv-safe: target must be a directory'
-fi
