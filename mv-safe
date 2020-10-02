@@ -1,0 +1,40 @@
+#! /bin/bash
+## mv-safe: add suffix if file exists; preserve file extension.
+## Issues:
+## - files without extensions gain an extension of their own name. not good.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+file=$1
+dir=$2
+
+move-safe () {
+	mv -n "$file" "$dir/${file%.*}_$RANDOM.${file##*.}"
+}
+
+loop () {
+	if [ -e $file ] && [ -e $dir/$file ]; then
+		move-safe
+	elif [ ! -e $dir/$file ]; then
+		mv -n $file $dir
+	else
+		exit
+	fi
+}
+
+if [[ -d $dir ]]; then
+	while true; do loop; done
+else
+	>&2 echo 'mv-safe: target must be a directory'
+fi
