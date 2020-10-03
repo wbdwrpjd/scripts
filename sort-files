@@ -23,7 +23,7 @@ else
 			if [[ ! -d "$dir"/"$subdir" ]]; then
 				mkdir -p "$dir"/"$subdir"
 			fi
-			filename=$(~/clean-name $(basename "$i"))
+			filename=$(clean-name $(basename "$i"))
 			mv-safe "$i" "$dir"/"$subdir"/"$filename"
 		fi
 	done
