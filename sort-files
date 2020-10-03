@@ -1,0 +1,43 @@
+#! /bin/bash
+## sort-files: send files to subdirectories based on file type
+### I use this for web browser downloads basically. Put this on crontab for your ~/Downloads
+## version 0.1
+## dependencies: clean-name, mv-safe
+## issues: add option to use clean-name, shouldnt be default
+
+## vars
+dir=$(realpath $1)
+subdir=""
+
+## main
+if [[ $# -ne 1 ]]; then
+	>&2 echo 'sort-files: one argument exactly, the directory to sort'
+	exit
+elif [[ ! -d "$dir" ]]; then
+	>&2 echo 'sort-files: directory does not exist'
+	exit
+else
+	for i in "$dir"/*; do
+		if [[ -f "$i" ]]; then
+			subdir=$(file -b --mime-type "$i")
+			if [[ ! -d "$dir"/"$subdir" ]]; then
+				mkdir -p "$dir"/"$subdir"
+			fi
+			filename=$(~/clean-name $(basename "$i"))
+			~/mv-safe "$i" "$dir"/"$subdir"/"$filename"
+		fi
+	done
+fi
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.

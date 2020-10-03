@@ -1,6 +1,6 @@
 #! /bin/bash
 ## mv-safe: add suffix if file exists; preserve file extension.
-## version 0.2
+## version 0.3
 ## issues:
 ## - add options; support hidden files
 ## - mv to same directory as source increments the suffix
@@ -54,8 +54,8 @@ elif [[ -f $2 ]]; then # Target is an existing file
 	mv -n "$1" "$dir"/"$basename"_"$suffix""$ext"
 else # Target does not exist
 	filename=$(basename "$2")
-	dir=$(realpath "$2" | sed "s|/$filename||")
-	if [[ -d $dir ]]; then
+	dir=$(echo "$2" | sed "s|/"$filename"||")
+	if [[ -d "$dir" ]]; then
 		mv -n "$1" "$2"
 	else
 		>&2 echo 'mv-safe: unexpected arguments'
