@@ -1,0 +1,3 @@
+#! /bin/bash
+
+for i in $(pidof $1); do kill -9 $i; done

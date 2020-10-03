@@ -1,0 +1,6 @@
+#! /bin/bash
+## mpv-mono: stream video in mono audio
+## dependencies: mpv
+
+## main
+mpv --audio-channels=fc "$1"

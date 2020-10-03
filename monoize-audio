@@ -1,0 +1,11 @@
+#! /bin/bash
+## monoize-audio: use ffmpeg to convert broken stereo audio to mono
+## dependencies: ffmpeg
+
+## vars
+filename="$(basename $1)"
+ext=".${filename#*.}"
+basename="$(basename "$filename" "$ext")"
+
+## main
+ffmpeg -i "$1" -ac 1 ""$basename"-mono"$ext""
