@@ -18,13 +18,13 @@ elif [[ ! -d "$dir" ]]; then
 	exit
 else
 	for i in "$dir"/*; do
-		if [[ -f "$i" ]]; then
+		if [[ -f "$i" ]]; then # i is a regular file
 			subdir=$(file -b --mime-type "$i")
 			if [[ ! -d "$dir"/"$subdir" ]]; then
 				mkdir -p "$dir"/"$subdir"
 			fi
-			filename=$(clean-name $(basename "$i"))
-			mv-safe "$i" "$dir"/"$subdir"/"$filename"
+			filename=$(~/clean-name $(basename "$i"))
+			~/mv-safe "$i" "$dir"/"$subdir"/"$filename"
 		fi
 	done
 fi

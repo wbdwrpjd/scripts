@@ -24,7 +24,7 @@ get-ext () {
 }
 gen-suffix () {
 	suffix=$(ls "$dir" | grep "$basename" | grep "$ext" | 
-		sed "s|"$basename"_||" | sed "s|\..*||" |
+		sed "s|"$basename"_\?||" | sed "s|\..*||" |
 		grep "^[[:digit:]]*$" | sort -n | tail -1)
 	if [[ -z $suffix ]]; then
 		suffix=0

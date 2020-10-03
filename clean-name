@@ -1,10 +1,9 @@
 #! /bin/bash
 ## Remove haram characters from filename, leaving only lower case alphanumeric, ., -, and _
-## Dependencies: mv-safe
 
 ## vars
 filename=$(basename "$1" | sed "s|[^[:alnum:]\._-]||g" | tr '[:upper:]' '[:lower:]')
-basename=$(echo $filename | sed "s|\..*||")
+basename=$(echo "$filename" | sed "s|\..*||")
 
 ## main
 if [[ -z $basename ]]; then # Basename is empty string because all characters were bad
