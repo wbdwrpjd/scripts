@@ -24,7 +24,7 @@ else
 				mkdir -p "$dir"/"$subdir"
 			fi
 			filename=$(~/clean-name $(basename "$i"))
-			/mv-safe "$i" "$dir"/"$subdir"/"$filename"
+			mv-safe "$i" "$dir"/"$subdir"/"$filename"
 		fi
 	done
 fi
