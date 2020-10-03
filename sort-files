@@ -10,7 +10,7 @@ dir=$(realpath $1)
 subdir=""
 
 ## main
-if [[ $# -ne 1 ]]; then
+if [[ "$#" -ne 1 ]]; then
 	>&2 echo 'sort-files: one argument exactly, the directory to sort'
 	exit
 elif [[ ! -d "$dir" ]]; then
