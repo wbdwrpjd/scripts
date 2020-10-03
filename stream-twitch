@@ -1,7 +1,7 @@
 #! /bin/bash
 ## stream to twitch.tv
 ## issues:
-## - add options to specify streamkey and server
+## - add options to specify streamkey, server, inres, outres, etc.
 
 INRES="2560x1440" # input resolution
 OUTRES="1920x1080" # output resolution
